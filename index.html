@@ -1,0 +1,1646 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YUKA — AI 1인 크리에이터 · 플랫폼 디렉터</title>
+  <meta name="description" content="유경애(Yuka)의 AI 크리에이터 통합 허브. AI 실험기, 디지털 플랫폼 빌딩, K-lo-fi 음악 생성 등 새로운 디지털 라이프와 실험을 공유합니다.">
+  
+  <!-- Google Fonts: Inter & Noto Sans KR -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Noto+Sans+KR:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    /* ==========================================
+       1. DESIGN SYSTEM & VARIABLE DEFINITIONS
+       ========================================== */
+    :root {
+      --bg-color: #0D0D1A;       /* 딥 다크 네이비 */
+      --bg-sub: #13132B;         /* 서브 배경색 */
+      --card-bg: rgba(255, 255, 255, 0.04);   /* 글래스모피즘 카드 배경 */
+      --card-border: rgba(255, 255, 255, 0.08); /* 글래스모피즘 테두리 */
+      --primary: #7C6AF7;        /* 라벤더 퍼플 */
+      --primary-light: #A89DF5;  /* 포인트 연한 색 */
+      --primary-glow: rgba(124, 106, 247, 0.35);
+      --text-main: #E8E6F5;      /* 본문 텍스트 */
+      --text-muted: #8B8AA8;     /* 보조 텍스트 */
+      --white: #FFFFFF;
+      --success: #10B981;        /* 초록색 액티브 상태 */
+      --success-glow: rgba(16, 185, 129, 0.3);
+      --font-family: 'Inter', 'Noto Sans KR', sans-serif;
+      --transition-smooth: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    /* Reset & Base Styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-family: var(--font-family);
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    body {
+      position: relative;
+      min-height: 100vh;
+      line-height: 1.6;
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: var(--bg-color);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--primary);
+    }
+
+    /* Common Layout */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    section {
+      padding: 100px 0;
+      position: relative;
+    }
+
+    @media (max-width: 768px) {
+      section {
+        padding: 60px 0;
+      }
+    }
+
+    /* Section Header Styles */
+    .section-header {
+      margin-bottom: 48px;
+    }
+
+    .section-label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--primary-light);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    .section-title {
+      font-size: 36px;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.02em;
+    }
+
+    @media (max-width: 768px) {
+      .section-title {
+        font-size: 28px;
+      }
+    }
+
+    /* ==========================================
+       2. BACKGROUND ANIMATIONS (AURORA)
+       ========================================== */
+    .aurora-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      z-index: -10;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(120px);
+      opacity: 0.12;
+      mix-blend-mode: screen;
+      animation: aurora-drift 18s infinite alternate ease-in-out;
+    }
+
+    .aurora-1 {
+      top: -10%;
+      left: -10%;
+      width: 60vw;
+      height: 60vw;
+      background: radial-gradient(circle, var(--primary) 0%, rgba(13, 13, 26, 0) 70%);
+    }
+
+    .aurora-2 {
+      bottom: -15%;
+      right: -10%;
+      width: 55vw;
+      height: 55vw;
+      background: radial-gradient(circle, #3B82F6 0%, rgba(13, 13, 26, 0) 70%);
+      animation-delay: -6s;
+    }
+
+    .aurora-3 {
+      top: 40%;
+      left: 30%;
+      width: 40vw;
+      height: 40vw;
+      background: radial-gradient(circle, #EC4899 0%, rgba(13, 13, 26, 0) 70%);
+      animation-delay: -12s;
+    }
+
+    @keyframes aurora-drift {
+      0% {
+        transform: translate(0, 0) scale(1) rotate(0deg);
+      }
+      50% {
+        transform: translate(8%, 12%) scale(1.15) rotate(15deg);
+      }
+      100% {
+        transform: translate(-5%, -5%) scale(0.9) rotate(-15deg);
+      }
+    }
+
+    /* ==========================================
+       3. INTERACTIVE & UTILITY STYLES
+       ========================================== */
+    /* Glassmorphism Card Base */
+    .glass-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: var(--transition-smooth);
+    }
+
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--primary-light);
+      box-shadow: 0 12px 30px rgba(124, 106, 247, 0.15);
+    }
+
+    /* Pulse Dots */
+    .pulse-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 8px;
+      flex-shrink: 0;
+    }
+
+    .pulse-dot.purple {
+      background-color: var(--primary-light);
+      animation: pulse-glow-purple 2s infinite ease-in-out;
+    }
+
+    .pulse-dot.green {
+      background-color: var(--success);
+      animation: pulse-glow-green 2s infinite ease-in-out;
+    }
+
+    @keyframes pulse-glow-purple {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(168, 157, 245, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(168, 157, 245, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(168, 157, 245, 0);
+      }
+    }
+
+    @keyframes pulse-glow-green {
+      0% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+      70% {
+        transform: scale(1);
+        box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
+      }
+      100% {
+        transform: scale(0.95);
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+      }
+    }
+
+    /* Scroll Fade In Animation */
+    .scroll-fade {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+      will-change: opacity, transform;
+    }
+
+    .scroll-fade.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+    .delay-400 { transition-delay: 400ms; }
+    .delay-500 { transition-delay: 500ms; }
+
+    /* Button Styles */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+      border: 1px solid transparent;
+      font-family: var(--font-family);
+    }
+
+    .btn-filled {
+      background: var(--primary);
+      color: var(--white);
+      border-color: var(--primary);
+      box-shadow: 0 4px 14px var(--primary-glow);
+    }
+
+    .btn-filled:hover {
+      background: var(--primary-light);
+      border-color: var(--primary-light);
+      box-shadow: 0 6px 20px rgba(124, 106, 247, 0.45);
+      transform: translateY(-2px);
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--text-main);
+      border-color: var(--card-border);
+    }
+
+    .btn-outline:hover {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--text-muted);
+      transform: translateY(-2px);
+    }
+
+    /* Text Gradient */
+    .text-gradient {
+      background: linear-gradient(135deg, var(--primary-light) 0%, #B8A6FF 50%, #89EBF5 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      display: inline-block;
+    }
+
+    /* ==========================================
+       4. NAV SECTION (STICKY HEADER)
+       ========================================== */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      width: 100%;
+      background: rgba(13, 13, 26, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--card-border);
+      transition: var(--transition-smooth);
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      height: 72px;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-k {
+      color: var(--primary);
+    }
+
+    .nav-links-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 32px;
+    }
+
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+
+    .nav-link:hover {
+      color: var(--white);
+    }
+
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background-color: var(--primary);
+      transition: var(--transition-smooth);
+    }
+
+    .nav-link:hover::after {
+      width: 100%;
+    }
+
+    .nav-action {
+      display: flex;
+      align-items: center;
+    }
+
+    .nav-sub-btn {
+      padding: 10px 20px;
+      font-size: 14px;
+    }
+
+    /* Hamburger Menu Button */
+    .hamburger-btn {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 8px;
+      z-index: 120;
+    }
+
+    .hamburger-btn span {
+      display: block;
+      width: 22px;
+      height: 2px;
+      background-color: var(--text-main);
+      margin: 5px 0;
+      transition: var(--transition-smooth);
+    }
+
+    @media (max-width: 768px) {
+      .hamburger-btn {
+        display: block;
+      }
+
+      .nav-links-wrapper {
+        position: fixed;
+        top: 0;
+        right: -100%;
+        width: 100%;
+        max-width: 320px;
+        height: 100vh;
+        background: rgba(13, 13, 26, 0.96);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        border-left: 1px solid var(--card-border);
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 32px;
+        transition: var(--transition-smooth);
+        z-index: 110;
+        padding: 40px;
+      }
+
+      .nav-links-wrapper.active {
+        right: 0;
+      }
+
+      .nav-action {
+        width: 100%;
+        margin-top: 16px;
+        justify-content: center;
+      }
+
+      .nav-sub-btn {
+        width: 100%;
+        max-width: 200px;
+      }
+
+      /* Animated states for Hamburger */
+      .hamburger-btn.active span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+      }
+
+      .hamburger-btn.active span:nth-child(2) {
+        opacity: 0;
+      }
+
+      .hamburger-btn.active span:nth-child(3) {
+        transform: rotate(-45deg) translate(5px, -5px);
+      }
+    }
+
+    /* ==========================================
+       5. HERO SECTION
+       ========================================== */
+    .hero {
+      min-height: calc(90vh - 72px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 0;
+    }
+
+    .hero-content {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 100px;
+      padding: 8px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--primary-light);
+      margin-bottom: 28px;
+    }
+
+    .hero-title {
+      font-size: 58px;
+      line-height: 1.25;
+      font-weight: 900;
+      color: var(--white);
+      margin-bottom: 24px;
+      letter-spacing: -0.03em;
+      word-break: keep-all;
+    }
+
+    .hero-title .text-gradient {
+      display: block;
+      margin: 6px 0;
+    }
+
+    .hero-subtitle {
+      font-size: 18px;
+      color: var(--text-muted);
+      margin-bottom: 44px;
+      line-height: 1.7;
+      word-break: keep-all;
+      max-width: 640px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .hero-btn {
+      padding: 14px 28px;
+      min-width: 170px;
+    }
+
+    @media (max-width: 768px) {
+      .hero {
+        min-height: auto;
+        padding: 60px 0 80px 0;
+      }
+
+      .hero-title {
+        font-size: 36px;
+      }
+
+      .hero-subtitle {
+        font-size: 15px;
+        margin-bottom: 32px;
+      }
+
+      .hero-buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .hero-btn {
+        width: 100%;
+      }
+    }
+
+    /* ==========================================
+       6. NOW SECTION (CURRENT PROJECTS)
+       ========================================== */
+    .now-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+    }
+
+    /* Fix layout wrapping for clean aesthetics */
+    @media (min-width: 1024px) {
+      .now-grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    .now-card {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .active-badge {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      border-radius: 100px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--success);
+      width: fit-content;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .now-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      word-break: keep-all;
+    }
+
+    .now-card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      word-break: keep-all;
+    }
+
+    /* ==========================================
+       7. YOUTUBE SECTION (CHANNELS)
+       ========================================== */
+    .youtube-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .yt-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .yt-thumbnail {
+      aspect-ratio: 16/9;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 44px;
+      position: relative;
+      background: var(--bg-sub);
+    }
+
+    /* Unique high-quality gradient thumbnail backdrops */
+    .yt-thumb-1 {
+      background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 100%);
+    }
+
+    .yt-thumb-2 {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    }
+
+    .yt-thumb-3 {
+      background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%);
+    }
+
+    .yt-thumb-4 {
+      background: linear-gradient(135deg, #EC4899 0%, #BE185D 100%);
+    }
+
+    .yt-thumb-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(1px);
+    }
+
+    .yt-thumb-emoji {
+      position: relative;
+      z-index: 1;
+      filter: drop-shadow(0 8px 12px rgba(0, 0, 0, 0.3));
+      transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
+    .yt-card:hover .yt-thumb-emoji {
+      transform: scale(1.18) rotate(5deg);
+    }
+
+    .yt-card-body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
+    }
+
+    .yt-card-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 10px;
+      word-break: keep-all;
+    }
+
+    .yt-card-desc {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      word-break: keep-all;
+      flex-grow: 1;
+    }
+
+    .yt-card-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      margin-top: auto;
+      transition: var(--transition-smooth);
+      width: fit-content;
+    }
+
+    .yt-card-link svg {
+      transition: transform 0.3s ease;
+    }
+
+    .yt-card-link:hover {
+      color: var(--white);
+    }
+
+    .yt-card-link:hover svg {
+      transform: translateX(4px);
+    }
+
+    /* ==========================================
+       8. PROJECTS SECTION (APP HUB)
+       ========================================== */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+    }
+
+    .project-card {
+      padding: 32px;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .project-status-badge {
+      display: inline-flex;
+      align-items: center;
+      border-radius: 100px;
+      padding: 5px 12px;
+      font-size: 12px;
+      font-weight: 700;
+      width: fit-content;
+      margin-bottom: 20px;
+      letter-spacing: 0.05em;
+    }
+
+    .project-status-badge.completed {
+      background: rgba(124, 106, 247, 0.1);
+      border: 1px solid rgba(124, 106, 247, 0.25);
+      color: var(--primary-light);
+    }
+
+    .project-status-badge.coming {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+    }
+
+    .project-card-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 12px;
+      word-break: keep-all;
+    }
+
+    .project-card-desc {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      margin-bottom: 32px;
+      word-break: keep-all;
+      flex-grow: 1;
+    }
+
+    .project-card-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--primary-light);
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 15px;
+      transition: var(--transition-smooth);
+      width: fit-content;
+      margin-top: auto;
+    }
+
+    .project-card-btn svg {
+      transition: transform 0.3s ease;
+    }
+
+    .project-card-btn:hover {
+      color: var(--white);
+    }
+
+    .project-card-btn:hover svg {
+      transform: translateX(4px);
+    }
+
+    /* ==========================================
+       9. NEWSLETTER SECTION
+       ========================================== */
+    .letter-container {
+      display: grid;
+      grid-template-columns: 11fr 10fr;
+      gap: 48px;
+      align-items: center;
+    }
+
+    .letter-info {
+      max-width: 520px;
+    }
+
+    .letter-title {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--white);
+      line-height: 1.35;
+      margin-bottom: 20px;
+      word-break: keep-all;
+    }
+
+    .letter-desc {
+      font-size: 16px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .letter-form-card {
+      padding: 36px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 8px;
+    }
+
+    .form-input {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      color: var(--white);
+      font-family: var(--font-family);
+      font-size: 15px;
+      transition: var(--transition-smooth);
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      background: rgba(255, 255, 255, 0.06);
+      box-shadow: 0 0 10px rgba(124, 106, 247, 0.15);
+    }
+
+    .form-input::placeholder {
+      color: rgba(255, 255, 255, 0.25);
+    }
+
+    .form-btn {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: none;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+
+    .form-note {
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .letter-container {
+        grid-template-columns: 1fr;
+        gap: 32px;
+      }
+
+      .letter-form-card {
+        padding: 24px;
+      }
+
+      .letter-title {
+        font-size: 24px;
+      }
+    }
+
+    /* ==========================================
+       10. ABOUT SECTION
+       ========================================== */
+    .about-container {
+      display: grid;
+      grid-template-columns: 4fr 5fr;
+      gap: 48px;
+      align-items: start;
+    }
+
+    /* Profile Side */
+    .about-profile-card {
+      padding: 40px 32px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .avatar-wrapper {
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 80px;
+      margin-bottom: 28px;
+      position: relative;
+      background: linear-gradient(135deg, var(--primary) 0%, #3B82F6 100%);
+      box-shadow: 0 8px 30px rgba(124, 106, 247, 0.4);
+    }
+
+    .avatar-glow {
+      position: absolute;
+      top: -6px;
+      left: -6px;
+      right: -6px;
+      bottom: -6px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-light), #3B82F6);
+      z-index: -1;
+      opacity: 0.4;
+      filter: blur(8px);
+      animation: pulse-glow-purple 3s infinite ease-in-out;
+    }
+
+    .about-name {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--white);
+      margin-bottom: 6px;
+    }
+
+    .about-title {
+      font-size: 15px;
+      color: var(--primary-light);
+      font-weight: 600;
+      margin-bottom: 20px;
+      letter-spacing: 0.02em;
+    }
+
+    .about-bio {
+      font-size: 15px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      word-break: keep-all;
+      max-width: 320px;
+    }
+
+    .about-inquiry-btn {
+      margin-top: 32px;
+      padding: 10px 24px;
+      font-size: 15px;
+      gap: 8px;
+      border-color: rgba(124, 106, 247, 0.4);
+    }
+
+    .about-inquiry-btn:hover {
+      background: rgba(124, 106, 247, 0.08);
+      border-color: var(--primary);
+    }
+
+    /* Skills Side */
+    .about-skills {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .skills-header {
+      margin-bottom: 24px;
+    }
+
+    .skills-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .skill-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.015);
+      border: 1px solid rgba(255, 255, 255, 0.03);
+      transition: var(--transition-smooth);
+    }
+
+    .skill-item:hover {
+      background: rgba(255, 255, 255, 0.04);
+      border-color: rgba(124, 106, 247, 0.25);
+      transform: translateX(4px);
+    }
+
+    .skill-icon-box {
+      flex-shrink: 0;
+      width: 24px;
+      height: 24px;
+      color: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+    }
+
+    .skill-text {
+      font-size: 16px;
+      font-weight: 500;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    @media (max-width: 768px) {
+      .about-container {
+        grid-template-columns: 1fr;
+        gap: 40px;
+      }
+
+      .about-profile-card {
+        padding: 32px 20px;
+      }
+
+      .skill-text {
+        font-size: 15px;
+      }
+    }
+
+    /* ==========================================
+       11. FOOTER SECTION
+       ========================================== */
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding: 60px 0 40px 0;
+      background: rgba(13, 13, 26, 0.5);
+      position: relative;
+      z-index: 10;
+    }
+
+    .footer-grid {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 32px;
+    }
+
+    .footer-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .footer-logo {
+      font-size: 24px;
+      font-weight: 900;
+      color: var(--white);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+
+    .footer-tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+      letter-spacing: 0.05em;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+
+    .footer-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 15px;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+    }
+
+    .footer-link:hover {
+      color: var(--primary-light);
+    }
+
+    .footer-copyright {
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255, 255, 255, 0.03);
+    }
+
+    @media (max-width: 768px) {
+      .footer-grid {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+      }
+
+      .footer-links {
+        justify-content: center;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Aurora Background drift effects -->
+  <div class="aurora-container">
+    <div class="aurora-blob aurora-1"></div>
+    <div class="aurora-blob aurora-2"></div>
+    <div class="aurora-blob aurora-3"></div>
+  </div>
+
+  <!-- [NAV] STICKY TOP NAVIGATION -->
+  <header>
+    <div class="container nav-container">
+      <a href="#" class="logo">YU<span class="logo-k">K</span>A</a>
+      
+      <div class="nav-links-wrapper" id="navLinks">
+        <a href="#now" class="nav-link">NOW</a>
+        <a href="#youtube" class="nav-link">유튜브</a>
+        <a href="#projects" class="nav-link">프로젝트</a>
+        <a href="#letter" class="nav-link">레터</a>
+        <a href="#about" class="nav-link">소개</a>
+        <div class="nav-action">
+          <a href="#letter" class="btn btn-filled nav-sub-btn" id="navSubBtn">구독하기</a>
+        </div>
+      </div>
+
+      <button class="hamburger-btn" id="menuBtn" aria-label="메뉴 열기">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- [HERO] FULL SCREEN HERO -->
+  <section class="hero">
+    <div class="container hero-content scroll-fade">
+      <div class="hero-badge">
+        <span class="pulse-dot purple"></span>
+        AI 1인 크리에이터 · 플랫폼 디렉터
+      </div>
+      <h1 class="hero-title">
+        AI와 함께<br>
+        <span class="text-gradient">인생의 다음 장</span>을<br>
+        만드는 공간
+      </h1>
+      <p class="hero-subtitle">
+        저는 Yuka(경애)입니다. 영상을 만들고, 앱을 만들고, 새로운 삶의 방식을 실험합니다.
+      </p>
+      <div class="hero-buttons">
+        <a href="#now" class="btn btn-filled hero-btn">지금 만드는 것 보기</a>
+        <a href="#about" class="btn btn-outline hero-btn">Yuka 알아보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- [NOW] id="now" — CURRENT PROJECTS -->
+  <section id="now">
+    <div class="container">
+      <div class="section-header scroll-fade">
+        <span class="section-label">NOW</span>
+        <h2 class="section-title">현재 진행 중</h2>
+      </div>
+      
+      <div class="now-grid">
+        <!-- Card 1 -->
+        <div class="glass-card now-card scroll-fade delay-100">
+          <div class="active-badge">
+            <span class="pulse-dot green"></span>ACTIVE
+          </div>
+          <h3 class="now-card-title">🎓 K 은퇴생활 연구소</h3>
+          <p class="now-card-desc">5060 세대를 위한 실전 AI 활용법 & 디지털 라이프</p>
+        </div>
+        
+        <!-- Card 2 -->
+        <div class="glass-card now-card scroll-fade delay-200">
+          <div class="active-badge">
+            <span class="pulse-dot green"></span>ACTIVE
+          </div>
+          <h3 class="now-card-title">✈️ 애니의 여행영어</h3>
+          <p class="now-card-desc">현재 비비(Bibi)의 실전 워크북 제작 중</p>
+        </div>
+        
+        <!-- Card 3 -->
+        <div class="glass-card now-card scroll-fade delay-300">
+          <div class="active-badge">
+            <span class="pulse-dot green"></span>ACTIVE
+          </div>
+          <h3 class="now-card-title">🎵 AlgoRhythm</h3>
+          <p class="now-card-desc">지친 일상에 평온함을 — K-lo-fi 수면·집중 음악</p>
+        </div>
+        
+        <!-- Card 4 -->
+        <div class="glass-card now-card scroll-fade delay-400">
+          <div class="active-badge">
+            <span class="pulse-dot green"></span>ACTIVE
+          </div>
+          <h3 class="now-card-title">💭 심리학 채널</h3>
+          <p class="now-card-desc">역사와 인물로 읽는 인간 본성 & 권력의 역학</p>
+        </div>
+        
+        <!-- Card 5 -->
+        <div class="glass-card now-card scroll-fade delay-500">
+          <div class="active-badge">
+            <span class="pulse-dot green"></span>ACTIVE
+          </div>
+          <h3 class="now-card-title">✨ 사색 (명언 제조기)</h3>
+          <p class="now-card-desc">한 줄의 문장을 나만의 작품으로 — say.yuka.kr</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [YOUTUBE] id="youtube" — 4 CHANNELS -->
+  <section id="youtube" style="background-color: rgba(19, 19, 43, 0.3);">
+    <div class="container">
+      <div class="section-header scroll-fade">
+        <span class="section-label">YOUTUBE</span>
+        <h2 class="section-title">운영 중인 채널</h2>
+      </div>
+
+      <div class="youtube-grid">
+        <!-- YouTube Card 1 -->
+        <div class="glass-card yt-card scroll-fade delay-100">
+          <div class="yt-thumbnail yt-thumb-1">
+            <div class="yt-thumb-overlay"></div>
+            <span class="yt-thumb-emoji">🎓</span>
+          </div>
+          <div class="yt-card-body">
+            <h3 class="yt-card-title">K 은퇴생활 연구소</h3>
+            <p class="yt-card-desc">5060 세대도 쉽게 따라 할 수 있는 실전 AI 활용법과 은퇴 후 제2의 인생 준비 노하우.</p>
+            <a href="https://www.youtube.com/@K%EC%9D%80%ED%87%B4%EC%83%9D%ED%99%9C%EC%97%B0%EA%B5%AC%EC%86%8C" target="_blank" class="yt-card-link" id="ytLink1">
+              채널 방문
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- YouTube Card 2 -->
+        <div class="glass-card yt-card scroll-fade delay-200">
+          <div class="yt-thumbnail yt-thumb-2">
+            <div class="yt-thumb-overlay"></div>
+            <span class="yt-thumb-emoji">🐾</span>
+          </div>
+          <div class="yt-card-body">
+            <h3 class="yt-card-title">애니의 여행영어</h3>
+            <p class="yt-card-desc">강아지 캐릭터 비비(Bibi)와 함께하는 상황별 여행 영어. 실용적이고 귀엽게.</p>
+            <a href="https://www.youtube.com/@%EC%95%A0%EB%8B%88%EC%9D%98%EC%97%AC%ED%96%89%EC%98%81%EC%96%B4" target="_blank" class="yt-card-link" id="ytLink2">
+              채널 방문
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- YouTube Card 3 -->
+        <div class="glass-card yt-card scroll-fade delay-300">
+          <div class="yt-thumbnail yt-thumb-3">
+            <div class="yt-thumb-overlay"></div>
+            <span class="yt-thumb-emoji">🎵</span>
+          </div>
+          <div class="yt-card-body">
+            <h3 class="yt-card-title">AlgoRhythm</h3>
+            <p class="yt-card-desc">AI가 만든 감성적인 K-lo-fi 음악. 수면과 집중을 위한 8시간 사운드스케이프.</p>
+            <a href="https://www.youtube.com/@AlgoRhythm-Lab" target="_blank" class="yt-card-link" id="ytLink3">
+              채널 방문
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+
+        <!-- YouTube Card 4 -->
+        <div class="glass-card yt-card scroll-fade delay-400">
+          <div class="yt-thumbnail yt-thumb-4">
+            <div class="yt-thumb-overlay"></div>
+            <span class="yt-thumb-emoji">🧠</span>
+          </div>
+          <div class="yt-card-body">
+            <h3 class="yt-card-title">본성과 권력의 심리학</h3>
+            <p class="yt-card-desc">역사적 인물과 사회 현상을 통해 인간 본성과 보이지 않는 힘의 역학을 탐구.</p>
+            <a href="https://www.youtube.com/@%EB%B3%B8%EC%84%B1%EA%B3%BC%EA%B6%8C%EB%A0%A5" target="_blank" class="yt-card-link" id="ytLink4">
+              채널 방문
+              <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [PROJECTS] id="projects" — REPRESENTATIVE PROJECTS -->
+  <section id="projects">
+    <div class="container">
+      <div class="section-header scroll-fade">
+        <span class="section-label">PROJECTS</span>
+        <h2 class="section-title">대표 프로젝트</h2>
+      </div>
+
+      <div class="projects-grid">
+        <!-- Project 1 -->
+        <div class="glass-card project-card scroll-fade delay-100">
+          <span class="project-status-badge completed">WEB APP · 출시 완료</span>
+          <h3 class="project-card-title">사색 💭</h3>
+          <p class="project-card-desc">
+            인생의 지혜를 한 줄의 예술로. 카테고리별 명언 탐색, 음성 낭독(TTS), 맞춤형 이미지 카드 제작 및 저장 가능한 모바일 최적화 웹앱.
+          </p>
+          <a href="https://say.yuka.kr" target="_blank" class="project-card-btn" id="projBtn1">
+            앱 열기
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+
+        <!-- Project 2 -->
+        <div class="glass-card project-card scroll-fade delay-200">
+          <span class="project-status-badge coming">COMING SOON · 기획 중</span>
+          <h3 class="project-card-title">다음 프로젝트 🚀</h3>
+          <p class="project-card-desc">
+            지금 조용히 만들고 있습니다. 뉴스레터를 구독하면 가장 먼저 알려드릴게요.
+          </p>
+          <a href="#letter" class="project-card-btn" id="projBtn2">
+            구독으로 먼저 받기
+            <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [LETTER] id="letter" — NEWSLETTER -->
+  <section id="letter" style="background-color: rgba(19, 19, 43, 0.3);">
+    <div class="container letter-container">
+      <!-- Left side info -->
+      <div class="letter-info scroll-fade">
+        <h2 class="letter-title">한 달에 몇 번, 좋은 실험 결과를 나눕니다.</h2>
+        <p class="letter-desc">
+          AI 실험기, 앱 개발 비하인드, 영상 제작 후기, 5060을 위한 디지털 팁. 알고리즘 없이 직접 보내는 편지.
+        </p>
+      </div>
+
+      <!-- Right side form -->
+      <div class="glass-card letter-form-card scroll-fade delay-200">
+        <form id="subscribeForm">
+          <div class="form-group">
+            <label for="userName" class="form-label">이름 (선택)</label>
+            <input type="text" id="userName" name="name" class="form-input" placeholder="홍길동">
+          </div>
+          
+          <div class="form-group">
+            <label for="userEmail" class="form-label">이메일 주소 (필수)</label>
+            <input type="email" id="userEmail" name="email" class="form-input" placeholder="example@email.com" required>
+          </div>
+
+          <button type="submit" class="btn btn-filled form-btn" id="submitBtn">무료 구독하기</button>
+          
+          <p class="form-note">스팸 없음 · 언제든 구독 취소 가능</p>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- [ABOUT] id="about" — BIO & SKILLS -->
+  <section id="about">
+    <div class="container about-container">
+      
+      <!-- Profile Column -->
+      <div class="glass-card about-profile-card scroll-fade">
+        <div class="avatar-wrapper">
+          <div class="avatar-glow"></div>
+          🌸
+        </div>
+        <h2 class="about-name">유경애 / Yuka</h2>
+        <div class="about-title">AI 1인 크리에이터 & 플랫폼 디렉터</div>
+        <p class="about-bio">
+          AI와 함께 새로운 것을 만들며 살아갑니다. 5060 세대의 디지털 전환을 돕고, 나의 실험이 누군가의 길이 되길 바랍니다. 빠른 성공이 아닌, 작은 결과물을 꾸준히 쌓아 10년 뒤 하나의 세계를 만드는 것이 목표입니다.
+        </p>
+        <a href="mailto:hello@yuka.kr" class="btn btn-outline about-inquiry-btn" id="inquiryBtn">
+          <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="margin-top: 1px;">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+          </svg>
+          비즈니스 문의
+        </a>
+      </div>
+
+      <!-- Skills Column -->
+      <div class="about-skills scroll-fade delay-200">
+        <div class="skills-header">
+          <span class="section-label">COMPETENCIES</span>
+          <h2 class="section-title">핵심 역량</h2>
+        </div>
+        
+        <div class="skills-list">
+          <!-- Skill 1 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">AI 콘텐츠 자동화 (ChatGPT, Claude, Gemini)</div>
+          </div>
+
+          <!-- Skill 2 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">디지털 플랫폼 빌딩 (웹앱 · PWA 구현)</div>
+          </div>
+
+          <!-- Skill 3 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">멀티 카테고리 유튜브 채널 디렉팅</div>
+          </div>
+
+          <!-- Skill 4 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">AI 음악 생성 (Suno AI · AlgoRhythm)</div>
+          </div>
+
+          <!-- Skill 5 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">디지털 상품 기획 · 자동화 수익 시스템</div>
+          </div>
+
+          <!-- Skill 6 -->
+          <div class="skill-item">
+            <div class="skill-icon-box">
+              <svg width="24" height="24" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
+              </svg>
+            </div>
+            <div class="skill-text">5060 디지털 전환 교육 콘텐츠</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- [FOOTER] -->
+  <footer>
+    <div class="container footer-grid">
+      <div class="footer-brand">
+        <a href="#" class="footer-logo">YU<span class="logo-k">K</span>A</a>
+        <div class="footer-tagline">Build · Learn · Explore</div>
+      </div>
+
+      <div class="footer-links">
+        <a href="#now" class="footer-link">NOW</a>
+        <a href="#youtube" class="footer-link">유튜브</a>
+        <a href="#projects" class="footer-link">프로젝트</a>
+        <a href="#letter" class="footer-link">레터</a>
+        <a href="https://say.yuka.kr" target="_blank" class="footer-link">사색 앱</a>
+        <a href="mailto:hello@yuka.kr" class="footer-link">문의</a>
+      </div>
+
+      <div class="footer-copyright">
+        © 2026 YUKA (유경애). All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       12. INTERACTION JAVASCRIPT
+       ========================================== */ -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      
+      // 1. Mobile Navigation Toggle
+      const menuBtn = document.getElementById('menuBtn');
+      const navLinks = document.getElementById('navLinks');
+      const navItems = document.querySelectorAll('.nav-link, .nav-sub-btn');
+
+      const toggleMenu = () => {
+        menuBtn.classList.toggle('active');
+        navLinks.classList.toggle('active');
+        document.body.style.overflow = navLinks.classList.contains('active') ? 'hidden' : 'auto';
+      };
+
+      const closeMenu = () => {
+        menuBtn.classList.remove('active');
+        navLinks.classList.remove('active');
+        document.body.style.overflow = 'auto';
+      };
+
+      menuBtn.addEventListener('click', toggleMenu);
+
+      navItems.forEach(item => {
+        item.addEventListener('click', closeMenu);
+      });
+
+      // Close menu if user clicks outside
+      document.addEventListener('click', (e) => {
+        if (!navLinks.contains(e.target) && !menuBtn.contains(e.target) && navLinks.classList.contains('active')) {
+          closeMenu();
+        }
+      });
+
+
+      // 2. Scroll Animation (IntersectionObserver)
+      const fadeElements = document.querySelectorAll('.scroll-fade');
+      
+      const observerOptions = {
+        root: null, // Viewport
+        rootMargin: '0px',
+        threshold: 0.1 // Triggers when 10% of element is visible
+      };
+
+      const scrollObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            // Unobserve once shown to optimize performance
+            observer.unobserve(entry.target);
+          }
+        });
+      }, observerOptions);
+
+      fadeElements.forEach(el => {
+        scrollObserver.observe(el);
+      });
+
+
+      // 3. Newsletter Submission Handler
+      const subscribeForm = document.getElementById('subscribeForm');
+      
+      subscribeForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        const nameInput = document.getElementById('userName');
+        const emailInput = document.getElementById('userEmail');
+        
+        const name = nameInput.value.trim();
+        const email = emailInput.value.trim();
+
+        if (!email) {
+          alert('이메일 주소를 입력해주세요.');
+          return;
+        }
+
+        /* 
+         * =======================================================
+         * TODO: 스티비(stibee.com) API 연동
+         * =======================================================
+         * 아래 주석 코드는 스티비 구독자 추가 API 연동 예시입니다.
+         * 실제 API Key와 주소록(List) ID를 확보하여 연동 가능합니다.
+         * 
+         * fetch('https://api.stibee.com/v1/lists/YOUR_LIST_ID/subscribers', {
+         *   method: 'POST',
+         *   headers: {
+         *     'AccessToken': 'YOUR_STIBEE_API_ACCESS_TOKEN',
+         *     'Content-Type': 'application/json'
+         *   },
+         *   body: JSON.stringify({
+         *     email: email,
+         *     name: name || '구독자',
+         *     status: 'A' // A: 바로 활성화 / S: 이메일 인증(더블 옵트인)
+         *   })
+         * })
+         * .then(res => res.json())
+         * .then(data => console.log('Stibee response:', data))
+         * .catch(err => console.error('Stibee integration error:', err));
+         * =======================================================
+         */
+
+        alert(`구독해 주셔서 감사합니다!\n이메일: ${email}\n소식을 가장 먼저 보내드릴게요.`);
+        subscribeForm.reset();
+      });
+
+    });
+  </script>
+</body>
+</html>
