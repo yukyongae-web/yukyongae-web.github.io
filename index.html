@@ -24,6 +24,7 @@
       --primary-light: #A89DF5;  /* 포인트 연한 색 */
       --primary-glow: rgba(124, 106, 247, 0.35);
       --text-main: #E8E6F5;      /* 본문 텍스트 */
+      --text-body: #C8C5E8;      /* 일반 본문 텍스트 */
       --text-muted: #8B8AA8;     /* 보조 텍스트 */
       --white: #FFFFFF;
       --success: #10B981;        /* 초록색 액티브 상태 */
@@ -564,6 +565,114 @@
     }
 
     /* ==========================================
+       5-2. WELCOME SECTION
+       ========================================== */
+    #welcome {
+      padding: 100px 0;
+    }
+    .welcome-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 56px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .welcome-greeting {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 20px;
+    }
+    .welcome-intro p {
+      color: var(--text-body);
+      font-size: 16px;
+      line-height: 1.9;
+      margin-bottom: 12px;
+    }
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .value-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      transition: border-color 0.25s, transform 0.25s;
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+    .value-card:hover {
+      border-color: rgba(124,106,247,0.4);
+      transform: translateY(-4px);
+    }
+    .value-en {
+      font-family: 'Inter', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      background: linear-gradient(120deg, #7C6AF7, #A89DF5);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      display: inline-block;
+    }
+    .value-kr {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.06em;
+      margin-bottom: 8px;
+    }
+    .value-card p {
+      font-size: 14px;
+      color: var(--text-body);
+      line-height: 1.75;
+    }
+    .welcome-letter {
+      border-left: 3px solid var(--primary);
+      padding-left: 32px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+    .welcome-letter h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+    .welcome-letter p {
+      font-size: 15px;
+      color: var(--text-body);
+      line-height: 1.9;
+    }
+    .welcome-letter em {
+      font-style: italic;
+      color: var(--primary-light);
+    }
+    .welcome-sign {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--primary-light) !important;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 768px) {
+      #welcome {
+        padding: 60px 0;
+      }
+      .values-grid {
+        grid-template-columns: 1fr;
+      }
+      .welcome-letter {
+        padding-left: 20px;
+      }
+    }
+
+    /* ==========================================
        6. NOW SECTION (CURRENT PROJECTS)
        ========================================== */
     .now-grid {
@@ -614,7 +723,7 @@
 
     .now-card-desc {
       font-size: 14px;
-      color: var(--text-muted);
+      color: var(--text-body);
       line-height: 1.5;
       word-break: keep-all;
     }
@@ -701,7 +810,7 @@
 
     .yt-card-desc {
       font-size: 14px;
-      color: var(--text-muted);
+      color: var(--text-body);
       line-height: 1.6;
       margin-bottom: 24px;
       word-break: keep-all;
@@ -783,7 +892,7 @@
 
     .project-card-desc {
       font-size: 15px;
-      color: var(--text-muted);
+      color: var(--text-body);
       line-height: 1.65;
       margin-bottom: 32px;
       word-break: keep-all;
@@ -978,7 +1087,7 @@
 
     .about-bio {
       font-size: 15px;
-      color: var(--text-muted);
+      color: var(--text-body);
       line-height: 1.7;
       word-break: keep-all;
       max-width: 320px;
@@ -1196,6 +1305,59 @@
       <div class="hero-buttons">
         <a href="#now" class="btn btn-filled hero-btn">지금 만드는 것 보기</a>
         <a href="#about" class="btn btn-outline hero-btn">Yuka 알아보기</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- [WELCOME] id="welcome" — GREETING & VALUES -->
+  <section id="welcome">
+    <div class="container">
+      <div class="welcome-inner scroll-fade">
+
+        <!-- 상단: 3가지 가치 -->
+        <div class="welcome-intro">
+          <p class="welcome-greeting">✨ 환영합니다, yuka.kr에 오신 여러분.</p>
+          <p>이곳은 완성된 브랜드가 아닙니다. 살아가며 계속 만들어지는 작은 플랫폼입니다.<br>
+          저는 영상을 만들고, 앱을 만들고, AI를 실험하고, 그 과정 속에서 배우고 느낀 것들을 기록합니다.</p>
+          <p>이 공간을 움직이는 세 가지 가치는 단순합니다.</p>
+        </div>
+
+        <!-- 3가지 가치 카드 -->
+        <div class="values-grid">
+          <div class="glass-card value-card">
+            <span class="value-en">Build</span>
+            <span class="value-kr">창조</span>
+            <p>거창한 일이 아니어도 괜찮습니다. 작은 시도 하나가 새로운 가능성의 시작이 된다고 믿습니다.</p>
+          </div>
+          <div class="glass-card value-card">
+            <span class="value-en">Learn</span>
+            <span class="value-kr">배움</span>
+            <p>배움에는 끝이 없다고 생각합니다. 잘한 것보다 잘 안된 경험이 다음 걸음을 만들어준다고 믿습니다.</p>
+          </div>
+          <div class="glass-card value-card">
+            <span class="value-en">Explore</span>
+            <span class="value-kr">탐험</span>
+            <p>익숙한 길보다 아직 가보지 않은 길을 선택합니다. 두려움보다 호기심을 조금 더 믿어보려고 합니다.</p>
+          </div>
+        </div>
+
+        <!-- 하단: 긴 편지글 -->
+        <div class="welcome-letter">
+          <h3>🌱 왜 나는 AI와 함께 인생의 다음 장을 준비하는가</h3>
+          <p>살다 보면 어느 순간 이런 질문을 하게 됩니다.<br>
+          <em>"이제 새로운 것을 시작하기에는 늦은 걸까?"</em></p>
+          <p>저는 오히려 그 반대라고 생각하게 되었습니다.<br>
+          AI를 만나고 나서 알게 된 것은, 기술이 사람을 대신하는 것이 아니라 사람의 가능성을 조금 더 넓혀줄 수 있다는 사실이었습니다.</p>
+          <p>혼자였다면 시작하지 못했을 작은 프로젝트들. 머릿속에만 머물렀을 아이디어들. 언젠가 해보고 싶다고 미뤄두었던 일들.<br>
+          AI는 그것들을 현실로 옮겨보게 해주었습니다.</p>
+          <p>하지만 제가 만들고 싶은 것은 기술 자체가 아닙니다.<br>
+          사람의 속도를 존중하면서도 새로운 시대를 함께 살아갈 수 있다는 작은 용기, 그리고 그 과정에서 느끼는 온기입니다.</p>
+          <p>그래서 저는 오늘도 만들고, 배우고, 탐험합니다.<br>
+          혹시 지금 새로운 시작을 고민하고 있다면, 이 공간이 당신에게도 작은 용기가 되기를 바랍니다.</p>
+          <p>함께 다음 장을 만들어가요.</p>
+          <p class="welcome-sign">— Yuka</p>
+        </div>
+
       </div>
     </div>
   </section>
